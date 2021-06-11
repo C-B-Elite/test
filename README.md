@@ -18,3 +18,15 @@ cd test/
 dfx help
 dfx config --help
 ```
+
+这个工程测试了Motoko中的数组和链表
+array初始化为10_0000个， List初始化为1_0000条数字
+使用100个随机数对array和list进行一百次随机查询， 得出时间。
+结果在result file 文件夹， 结论是数组的查询处理能力远超链表
+
+
+The project test list and array process ability, lanauage : Motoko
+the array is initralized 10_0000 numbers and list initralized 1_0000 numbers.
+use 100 random numbers search in the array and list
+
+result in the "result file"

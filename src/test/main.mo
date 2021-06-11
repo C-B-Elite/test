@@ -6,33 +6,38 @@ import Nat8 "mo:base/Nat8";
 import List "mo:base/List";
 import Nat32 "mo:base/Nat32";
 import Text "mo:base/Text";
+import TrieSet "mo:base/TrieSet";
+import Hash "mo:base/Hash";
 
 actor {
     //private var array : Array.Array<Nat8> = [0];
     private var list = List.nil<Nat32>(); 
-    var b : Blob = Text.encodeUtf8("");
+    private var b : Blob = Text.encodeUtf8("");
+    private let array = Array.init<Nat>(100000, 0);
+
     private var random : Random.Finite = Random.Finite(b);
-    private func createNumber() : Text{
-        var i : Nat32 = 10_000_000;
+
+    private func createList() : Text{
+        var i : Nat32 = 10000;
         let before = Time.now();
         while (i != Nat32.fromNat(0)) {
             list := List.append(list, ?(i, null));
             i-=1;
         };
         let end = Time.now();
-        let elapsedSeconds = (end - before) / 1000_000_000;
-        Int.toText(elapsedSeconds)
+        let elapsedSeconds = end - before ;
+        Int.toText(elapsedSeconds) # " " # "before" # Int.toText(before) # "end " # Int.toText(end)
     };
 
-    public query func findNumber() : async Text{
+    public query func findListNumber() : async Text{
         //average time
-        var create_time = createNumber();
+        var create_time = createList();
         
         //time
         var i = 100;
-        let before = Time.now();
+        //let before = Time.now();
         while (i != 0){
-            var randomNumber = switch(random.range(Nat8.fromNat(23))){
+            var randomNumber = switch(random.range(Nat8.fromNat(13))){
                 case (?num) { num };
                 case _ { 0 };
             };
@@ -46,18 +51,35 @@ actor {
             };
             i -= 1;
         };
-        let after = Time.now();
-        let elapsedSeconds = (after - before) / 1000_000_000;
-        "find time : " # Int.toText(elapsedSeconds)
-    }; 
+        "finish list search"
+        //let after = Time.now();
+        //let elapsedSeconds = after - before;
+        //"find time : " # Int.toText(elapsedSeconds) # create_time
+    };
 
+    private func createArray(){
+        var a = 100000;
+        while (a != 0) {
+            array[a-1] := a;
+            a -= 1;
+        }
+    };
 
-
-    
-    public func main(name : Text) : async Text {
-        //caculate time
-        var createTime = createNumber();
-        //var findTime = findNumber();
-        return "create time :" # createTime;
+    public query func findArrayNumbe() : async Text{
+        createArray();
+        var i = 100;
+        while (i != 0){
+            var randomNumber = switch(random.range(Nat8.fromNat(13))){
+                case (?num) { num };
+                case _ { 0 };
+            };
+            label t for (num in array.vals()) { 
+                if (num == randomNumber) {
+                    break t
+                }
+            };
+            i -= 1;
+        };
+        "finish array search"
     };
 };
